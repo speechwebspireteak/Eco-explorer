@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>นักสำรวจระบบนิเวศ</title>
+<meta name="author" content="Phimphakan Saengmao">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;700&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#17332b;--card:#fffdf4;--mut:#55726a;--leaf:#2a9d6a;--sun:#ffc531;--red:#e8534a;--sky:#3b9de0;--line:#cfe6d6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#1b3a32;--ink:#eaf6ee;--mut:#a5c7ba;--line:#2f574b}}
+:root[data-theme="dark"]{--card:#1b3a32;--ink:#eaf6ee;--mut:#a5c7ba;--line:#2f574b}
+*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden}
+body{font:400 17px/1.55 "Noto Sans Thai",system-ui,sans-serif;color:var(--ink);background:#17332b}
+h1,h2,h3,.f{font-family:Mali,"Noto Sans Thai",sans-serif;margin:0}
+button{font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:8px 14px;min-height:46px;cursor:pointer}
+button:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.go{background:var(--sun);color:#17332b;border-color:#e0a800;font-weight:600}
+.scr{height:100%;display:flex;flex-direction:column;position:relative}
+/* หน้าเปิด */
+.ttl{background:linear-gradient(#58c0f0,#bfeaff 55%,#e9f8c9);align-items:center;justify-content:center;text-align:center;color:#17332b;overflow:hidden;padding:20px}
+.ttl h1{font-size:clamp(40px,11vw,84px);line-height:1.05;text-shadow:3px 3px 0 #fff8}
+.ttl p{max-width:420px;font-size:18px;margin:12px 0 22px}
+.ttl .go{font-size:22px;padding:12px 34px;border-radius:99px;box-shadow:0 6px 0 #c98f00}
+#app{height:100%}
+.cr{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:#fffdf4;color:#17332b;border:2px solid #cfe6d6;border-radius:14px;padding:4px 12px;font:600 14px Mali,"Noto Sans Thai",sans-serif;box-shadow:0 3px 0 #0002;z-index:6}
+.hill{position:absolute;left:-10%;right:-10%;bottom:0;height:34%;background:#58b45a;border-radius:50% 50% 0 0/100% 100% 0 0}
+.hill.b{height:22%;background:#3f9b4b;left:-30%;right:30%}
+.fl{position:absolute;font-size:44px;animation:fl 5s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-16px) rotate(6deg)}}
+.sunb{position:absolute;top:6%;right:8%;font-size:80px}
+/* เลือกแผนที่ */
+.mp{background:linear-gradient(#dff4ff,#f1f9d9);overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;display:block;padding:16px;color:#17332b}
+.mp .w{max-width:760px;margin:0 auto;width:100%;padding-bottom:80px}
+.mc{display:block;width:100%;text-align:left;border:0;border-radius:24px;padding:0;margin:14px 0;overflow:hidden;color:#fff;box-shadow:0 6px 0 #0003}
+.mc .t{height:120px;display:flex;align-items:flex-end;padding:0 18px;font-size:44px;letter-spacing:4px}
+.mc .d{padding:12px 18px;background:#0000002e}.mc b{font:700 24px Mali}
+.mc[disabled]{filter:grayscale(.8);opacity:.7;cursor:not-allowed}
+/* ฉาก */
+.top{display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--card);z-index:3}
+.top b{flex:1;font:700 19px Mali}.st{background:var(--sun);color:#17332b;border-radius:99px;padding:2px 12px;font-weight:600}
+.owl{background:#fff8d6;color:#17332b;padding:6px 12px;font-size:15px;z-index:3;border-bottom:2px solid #f0dc7a}
+.sc{flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;display:flex;align-items:flex-end;position:relative;-webkit-overflow-scrolling:touch;background-size:cover;background-position:center}.stg{will-change:transform}
+.stg{position:relative;width:1800px;height:460px;flex:none}
+.far{position:absolute;left:0;bottom:90px;width:1800px;height:200px;will-change:transform}
+.far i{position:absolute;bottom:0;border-radius:50% 50% 0 0;opacity:.7}
+.gnd{position:absolute;left:0;right:0;bottom:0;height:110px}
+.wat{position:absolute;left:0;right:0;bottom:0;height:44px;background:#3b9de0aa}
+.en{position:absolute;z-index:2;background:none;border:0;padding:0;min-height:0;line-height:1;cursor:pointer;transition:transform .5s,opacity .5s,filter .5s;border-radius:50%}
+.en.an{animation:fl 4s ease-in-out infinite}
+.en.s{outline:4px solid var(--sun);outline-offset:4px;background:#fff6}
+.en.dead{opacity:.07;filter:grayscale(1);pointer-events:none}.en.up{transform:scale(1.35)}.en.dn{transform:scale(.7);filter:saturate(.3)}
+.en small{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-size:13px;white-space:nowrap;background:#fffd;color:#17332b;border-radius:8px;padding:0 6px;pointer-events:none}
+.en.env-wilt{transform:rotate(12deg) scale(.78);filter:grayscale(.45) saturate(.6)}.en.env-stress{opacity:.35;filter:grayscale(.6)}
+.envfx{position:absolute;inset:0;pointer-events:none;z-index:0;transition:background .3s}.envctrl{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0}.envrow{display:grid;grid-template-columns:110px 1fr 34px;gap:8px;align-items:center;font-size:14px}.envrow input{width:100%;accent-color:var(--leaf)}.envread{background:var(--line);border-radius:12px;padding:9px 11px;font-size:14px}.journal{height:100%;overflow:auto;background:linear-gradient(#e7f7ff,#f8f9e9);color:#17332b;padding:16px 12px 90px}.journal .jw{max-width:850px;margin:auto}.jgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.jcard{background:#fffdf4;border:2px solid #cfe6d6;border-radius:16px;padding:12px;box-shadow:0 3px 0 #0001}.jcard h3{font-size:18px}.jword{display:inline-block;background:#dff3df;border-radius:10px;padding:2px 8px;margin:3px;font-size:13px}.jtop{display:flex;gap:8px;align-items:center;margin-bottom:14px}.jtop h2{flex:1}.chartbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;margin:12px 0}.chartbox svg{width:100%;height:auto;display:block}.chartlegend{display:flex;flex-wrap:wrap;gap:10px;font-size:13px}.chartlegend span{display:flex;align-items:center;gap:5px}.chartlegend i{display:inline-block;width:12px;height:12px;border-radius:3px}
+@media(max-width:520px){.tb button{font-size:12px;padding:4px 1px}.envrow{grid-template-columns:92px 1fr 30px;font-size:13px}.sh{max-height:65%}}
+svg.ov{position:absolute;inset:0;pointer-events:none}
+.tb{display:flex;gap:6px;padding:8px;background:var(--card);z-index:3}.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:5px 8px;background:var(--card);border-top:1px solid var(--line);z-index:3}.tools button{min-width:0;font-size:12px;padding:4px 2px;line-height:1.25;min-height:38px}.missioncard{background:#fffdf4;border:2px solid #cfe6d6;border-radius:16px;padding:12px;margin:8px 0;color:#17332b}.missioncard button{width:100%;margin:5px 0;text-align:left}.ecoresult{padding:10px;border-radius:12px;background:#e6f5df;margin-top:8px;color:#17332b}.difficulty{display:flex;gap:8px;flex-wrap:wrap}.animal-preview{font-size:64px;text-align:center;padding:12px;background:linear-gradient(#c8efff,#e6f5d4);border-radius:16px}
+.tb button{flex:1;padding:6px 2px;font-size:14px;line-height:1.2}.tb button.on{background:var(--sun);color:#17332b;border-color:#e0a800;font-weight:600}
+.sh{position:absolute;left:8px;right:8px;bottom:72px;max-height:58%;overflow:auto;background:var(--card);border:3px solid var(--leaf);border-radius:20px;padding:14px;z-index:5;box-shadow:0 8px 30px #0005}
+.tg{display:inline-block;border-radius:10px;padding:0 10px;font-size:14px;font-weight:600;color:#fff;background:var(--leaf)}
+.sh .o{display:block;width:100%;text-align:left;margin:6px 0}
+.ok{border-color:var(--leaf)!important;background:#2a9d6a30!important}.no{border-color:var(--red)!important;background:#e8534a26!important}
+#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:#17332b;color:#fff;padding:8px 20px;border-radius:99px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:30}
+.cld{position:absolute;left:-120px;font-size:80px;opacity:.85;animation:dr linear infinite;pointer-events:none}@keyframes dr{to{left:1900px}}#sn{position:fixed;right:10px;top:calc(8px + env(safe-area-inset-top,0px));z-index:40;width:46px;padding:0;border-radius:50%}.top{padding-right:64px}.en{filter:drop-shadow(0 4px 3px #0003)}
+@media (prefers-reduced-motion:reduce){.fl,.en.an,.cld{animation:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div><div id="toast" role="status"></div><button id="sn" onclick="tgl()" aria-label="เปิดปิดเสียง">🔊</button>
+<script>
+var A=document.getElementById('app'),S={};try{S=JSON.parse(localStorage.getItem('eco2')||'{}')}catch(e){}
+function sv(){try{localStorage.setItem('eco2',JSON.stringify(S))}catch(e){}}
+function say(m){var t=document.getElementById('toast');t.textContent=m;t.style.opacity=1;setTimeout(function(){t.style.opacity=0},1800)}
+function stars(m){return [1,2,3,4,5].filter(function(q){return S['m'+m+'q'+q]}).length}
+function tot(){return Object.keys(S).filter(function(k){return /^m\d+q\d$/.test(k)}).length}
+function sh(a){return a.map(function(x){return[Math.random(),x]}).sort(function(p,q){return p[0]-q[0]}).map(function(p){return p[1]})}
+
+/* ===== ข้อมูล ===== */
+var SP={
+sun:['☀️','ดวงอาทิตย์','ไม่มีชีวิต','ให้แสงและพลังงานแก่พืชใช้สร้างอาหาร','พลังงานเกือบทั้งหมดในโซ่อาหารเริ่มต้นจากดวงอาทิตย์','พืชสร้างอาหารจากแสงแดด'],
+water:['💧','น้ำ','ไม่มีชีวิต','เป็นที่อยู่ของสัตว์น้ำและจำเป็นต่อพืชทุกชนิด','ทุกชีวิตขาดน้ำไม่ได้','น้ำเป็นที่อยู่และช่วยพืชเจริญเติบโต'],
+rice:['🌾','ต้นข้าว','ผู้ผลิต','รากฝอยดูดน้ำและธาตุอาหารในดินนาน้ำขัง ใบยาวรับแสงได้มาก','ข้าวเป็นอาหารหลักของคนไทย','รากฝอยดูดน้ำจากนาน้ำขัง'],
+weed:['🌱','วัชพืช','ผู้ผลิต','โตเร็วและแตกกอแน่น ขึ้นได้แม้ดินไม่ค่อยดี','วัชพืชแย่งน้ำ แสง และธาตุอาหารจากต้นข้าว','โตเร็วและแตกกอแน่น'],
+flower:['🌼','ดอกไม้ที่คันนา','ผู้ผลิต','ดอกสีสดมีน้ำหวาน ดึงดูดแมลงให้มาช่วยผสมเกสร','ดอกไม้ผลิตน้ำหวานเป็นรางวัลให้ผึ้ง','ดอกสีสดมีน้ำหวานล่อแมลง'],
+bee:['🐝','ผึ้ง','ผู้บริโภค','มีปีกบินไปหาดอกไม้ได้ไกล และมีขนช่วยพาเกสร','ผึ้งหนึ่งตัวเยี่ยมดอกไม้ได้หลายร้อยดอกต่อวัน','มีปีกและขนช่วยพาเกสรดอกไม้'],
+hopper:['🦗','ตั๊กแตน','ผู้บริโภค','ขาหลังยาวแข็งแรง กระโดดหนีศัตรู ตัวสีเขียวกลมกลืนกับใบข้าว','ตั๊กแตนกินใบข้าวและหญ้า','ขาหลังยาวกระโดดหนี ตัวสีเขียวพรางตัว'],
+rat:['🐀','หนูนา','ผู้บริโภค','ฟันหน้าคมแทะเมล็ดได้ ออกหากินกลางคืนหลบศัตรู','หนูนาออกลูกเก่งมาก ถ้าไม่มีผู้ล่าจะระบาดหนัก','ฟันหน้าคมแทะเมล็ด หากินกลางคืน'],
+frog:['🐸','กบ','ผู้บริโภค','ลิ้นยาวตวัดจับแมลง ผิวหนังชื้นช่วยหายใจ สีเขียวพรางตัว','กบช่วยกินแมลงศัตรูพืชในนา','ลิ้นตวัดจับแมลง ผิวหนังหายใจได้'],
+mosq:['🦟','ยุง','ผู้บริโภค','มีปากแหลมยาวเหมือนเข็ม ใช้ดูดเลือดหรือน้ำหวาน','ยุงตัวเมียดูดเลือดเพื่อใช้ในการวางไข่','ปากแหลมเหมือนเข็มดูดอาหาร'],
+snake:['🐍','งู','ผู้บริโภค','ไม่มีขาแต่เลื้อยเร็ว ลิ้นรับกลิ่นเหยื่อ กลืนเหยื่อได้ทั้งตัว','งูช่วยควบคุมจำนวนหนูในนา','ลิ้นรับกลิ่นเหยื่อ เลื้อยเร็ว'],
+hawk:['🦅','เหยี่ยว','ผู้บริโภค','ตาเฉียบไว บินสูงมองเห็นเหยื่อไกล กรงเล็บแหลมคมจับเหยื่อ','เหยี่ยวอยู่ปลายโซ่อาหาร จึงมีจำนวนน้อยกว่าเหยื่อ','ตาไว กรงเล็บแหลมจับเหยื่อ'],
+mush:['🍄','เห็ดรา','ผู้ย่อยสลาย','ย่อยซากพืชซากสัตว์ให้เป็นธาตุอาหารคืนสู่ดิน','ถ้าไม่มีผู้ย่อยสลาย ซากจะกองทับถมไม่หมด','ย่อยซากให้เป็นธาตุอาหาร'],
+tree:['🌳','ต้นโกงกาง','ผู้ผลิต','รากค้ำยันพยุงลำต้นกลางโคลน และทนน้ำเค็มได้','รากโกงกางเป็นบ้านและที่หลบภัยของสัตว์เล็กจำนวนมาก','รากค้ำยันทนโคลนและน้ำเค็ม'],
+crab:['🦀','ปู','ผู้บริโภค','กรามแข็งแรง ลำตัวสีเข้มกลมกลืนกับโคลน ขุดรูหลบภัยได้','ปูกินใบไม้ร่วงและช่วยพรวนดิน','ลำตัวสีเข้มพรางตัวและขุดรูหลบภัย'],
+snail:['🐌','หอย','ผู้บริโภค','เปลือกแข็งปกป้องตัวอ่อนนุ่ม และปิดฝาเก็บความชื้นตอนน้ำลด','หอยกินแพลงก์ตอนและเศษใบไม้','เปลือกแข็งป้องกันตัว'],
+fish:['🐟','ปลา','ผู้บริโภค','ลำตัวเพรียวว่ายเร็ว มีเหงือกหายใจในน้ำ','ป่าชายเลนเป็นแหล่งอนุบาลลูกปลา','ลำตัวเพรียวว่ายเร็ว เหงือกหายใจในน้ำ'],
+heron:['🐦','นกกระยาง','ผู้บริโภค','ขายาวเดินลุยน้ำตื้นได้ จะงอยปากแหลมจับปลา','นกกระยางยืนนิ่ง ๆ รอจังหวะจับเหยื่อ','ขายาวลุยน้ำ ปากแหลมจับเหยื่อ'],
+barn:['🐚','เพรียง','ผู้บริโภค','เกาะติดแน่นกับผิวแข็ง จึงไม่ถูกคลื่นพัดพาไป','เพรียงเกาะรากไม้เพื่อให้ได้อาหารจากน้ำที่ไหลผ่าน','เกาะติดแน่นไม่ให้คลื่นพัด']};
+Object.assign(SP,{
+cactus:['🌵','กระบองเพชร','ผู้ผลิต','ลำต้นอวบน้ำเก็บน้ำไว้ ใบเปลี่ยนเป็นหนามลดการสูญเสียน้ำ','กระบองเพชรบางชนิดเก็บน้ำได้หลายร้อยลิตร','ลำต้นอวบน้ำเก็บน้ำ ใบเป็นหนาม'],
+shrub:['🌿','ไม้พุ่มทะเลทราย','ผู้ผลิต','รากยาวหยั่งลึกและแผ่กว้างหาน้ำใต้ทราย','รากไม้พุ่มบางชนิดยาวกว่าลำต้นหลายเท่า','รากยาวหยั่งลึกหาน้ำ'],
+beetle:['🪲','ด้วง','ผู้บริโภค','ปีกแข็งปกป้องตัวและเก็บความชื้น ออกหากินตอนเช้ามืดที่อากาศเย็น','ด้วงบางชนิดดื่มหยดน้ำค้างที่เกาะบนตัวเอง','ปีกแข็งปกป้องตัว หากินตอนเช้ามืด'],
+dmouse:['🐭','หนูทะเลทราย','ผู้บริโภค','ได้น้ำจากเมล็ดพืช และขุดโพรงหลบร้อนตอนกลางวัน','หนูทะเลทรายหากินตอนกลางคืนที่อากาศเย็น','ขุดโพรงหลบร้อน ได้น้ำจากอาหาร'],
+lizard:['🦎','กิ้งก่า','ผู้บริโภค','ผิวเป็นเกล็ดกันน้ำระเหย สีตัวกลมกลืนกับทราย และวิ่งเร็ว','กิ้งก่าบางชนิดยกเท้าสลับเพื่อไม่ให้ร้อนบนทรายเดือด','เกล็ดกันน้ำระเหย สีพรางตัว'],
+bird:['🐦','นกทำรังในกระบองเพชร','ผู้บริโภค','เจาะโพรงทำรังในลำต้น ซึ่งเย็นกว่าข้างนอกและปลอดภัยจากศัตรู','ต้นกระบองเพชรไม่ได้รับอันตรายจากรังของนก','เจาะโพรงทำรังที่เย็นและปลอดภัย'],
+plank:['🦠','แพลงก์ตอนพืช','ผู้ผลิต','ตัวเล็กมากลอยใกล้ผิวน้ำที่แสงส่องถึง สร้างอาหารจากแสงได้','แพลงก์ตอนพืชผลิตออกซิเจนจำนวนมากให้โลก','ตัวเล็กลอยใกล้ผิวน้ำรับแสงสร้างอาหาร'],
+alg:['🌿','สาหร่าย','ผู้ผลิต','เกาะติดหินและปะการัง รับแสงแดดผ่านน้ำใส','สาหร่ายเป็นอาหารของปลาหลายชนิด','เกาะหินรับแสงสร้างอาหาร'],
+shrimp:['🦐','กุ้งฝอย','ผู้บริโภค','ลำตัวโปร่งใสพรางตัวในน้ำ และดีดตัวถอยหลังหนีศัตรูได้เร็ว','กุ้งตัวเล็กเป็นอาหารสำคัญของปลาหลายชนิด','ตัวโปร่งใส ดีดตัวหนีเร็ว'],
+rfish:['🐟','ปลาเล็กแนวปะการัง','ผู้บริโภค','ว่ายเป็นฝูงใหญ่ ทำให้ศัตรูจับยาก และหลบในซอกปะการัง','ฝูงปลาเคลื่อนไหวพร้อมกันเหมือนสัตว์ตัวใหญ่ตัวเดียว','ว่ายเป็นฝูงและหลบในซอกปะการัง'],
+parrot:['🐡','ปลานกแก้ว','ผู้บริโภค','ฟันเชื่อมกันเป็นจะงอยแข็งแรง ขูดสาหร่ายบนปะการังกินได้','ปลานกแก้วช่วยไม่ให้สาหร่ายปกคลุมปะการัง','ฟันแข็งขูดสาหร่ายกิน'],
+shark:['🦈','ฉลาม','ผู้บริโภค','ลำตัวเพรียวว่ายเร็ว จมูกไวรับกลิ่นเหยื่อไกล ฟันคมและงอกใหม่ได้','ฉลามเป็นผู้ล่าสูงสุด ช่วยให้จำนวนเหยื่อสมดุล','ลำตัวเพรียว จมูกไว ฟันคม'],
+clown:['🐠','ปลาการ์ตูน','ผู้บริโภค','มีเมือกที่ผิวกันพิษ จึงหลบในดอกไม้ทะเลได้อย่างปลอดภัย','ปลาการ์ตูนเกิดเป็นเพศผู้ก่อนทุกตัว','มีเมือกกันพิษ หลบในดอกไม้ทะเล'],
+nem:['🪸','ดอกไม้ทะเล','ผู้บริโภค','หนวดมีเซลล์พิษใช้จับเหยื่อและป้องกันตัว','ดอกไม้ทะเลเป็นสัตว์ ไม่ใช่พืช','หนวดมีพิษจับเหยื่อ']});
+Object.assign(SP,{
+moss:['🌱','มอสและไลเคน','ผู้ผลิต','เตี้ยติดพื้นหลบลมหนาว และเจริญเติบโตได้ช้าในอากาศเย็น','ไลเคนเป็นอาหารสำคัญของสัตว์ขั้วโลกในฤดูหนาว','เตี้ยติดพื้นหลบลมหนาว'],
+krill:['🦐','คริลล์','ผู้บริโภค','ตัวเล็กอยู่รวมเป็นฝูงใหญ่ กินแพลงก์ตอนพืชใต้แผ่นน้ำแข็ง','คริลล์รวมกันเป็นฝูงใหญ่จนมองเห็นได้จากอวกาศ','อยู่เป็นฝูงใหญ่ กินแพลงก์ตอน'],
+cod:['🐟','ปลาค็อด','ผู้บริโภค','เลือดมีสารกันเลือดแข็งตัว จึงอยู่ในน้ำเย็นจัดได้','ปลาค็อดว่ายเป็นฝูงเพื่อความปลอดภัย','เลือดมีสารกันแข็ง อยู่ในน้ำเย็นจัดได้'],
+seal:['🦭','แมวน้ำ','ผู้บริโภค','มีไขมันหนาใต้ผิวหนังกันหนาว และดำน้ำได้ลึกนานหลายนาที','แมวน้ำเจาะรูหายใจบนน้ำแข็ง','ไขมันหนากันหนาว ดำน้ำได้นาน'],
+bear:['🐻','หมีขาว','ผู้บริโภค','ขนสีขาวพรางตัวกับหิมะ ขนหนาสองชั้น และมีไขมันหนา','หมีขาวเป็นผู้ล่าบนสุดของขั้วโลกเหนือ','ขนขาวพรางตัว ขนหนาและไขมันหนา'],
+hare:['🐇','กระต่ายอาร์กติก','ผู้บริโภค','ขนเปลี่ยนเป็นสีขาวหน้าหนาว พรางตัวจากศัตรู หูเล็กลดการเสียความร้อน','กระต่ายอาร์กติกวิ่งได้เร็วมาก','ขนขาวพรางตัว หูเล็กลดเสียความร้อน'],
+fox:['🦊','จิ้งจอกอาร์กติก','ผู้บริโภค','ขนหนาแน่นและเท้ามีขนปกคลุม เดินบนหิมะได้ไม่เย็นเท้า','จิ้งจอกอาร์กติกเปลี่ยนสีขนตามฤดูกาล','ขนหนาแน่นและเท้ามีขนกันเย็น'],
+bigtree:['🌳','ต้นไม้ใหญ่','ผู้ผลิต','ลำต้นสูงชะลูดและใบกว้าง แย่งรับแสงเหนือเรือนยอด','ป่าดิบชื้นมีต้นไม้หลายชั้นเป็นบ้านของสัตว์จำนวนมาก','ลำต้นสูงใบกว้างรับแสง'],
+orchid:['🌺','กล้วยไม้ป่า','ผู้ผลิต','รากอากาศเกาะกิ่งไม้สูงเพื่อรับแสง และดูดความชื้นจากอากาศ','กล้วยไม้ป่าไม่ได้เบียดเบียนต้นไม้ที่มันเกาะ','รากอากาศเกาะกิ่งรับแสง'],
+cater:['🐛','หนอนผีเสื้อ','ผู้บริโภค','สีเขียวพรางตัวกับใบไม้ และกินใบไม้ได้มากเพื่อเตรียมเป็นดักแด้','หนอนผีเสื้อจะเปลี่ยนเป็นผีเสื้อที่ช่วยผสมเกสร','สีเขียวพรางตัวกับใบไม้'],
+toucan:['🦜','นกทูแคน','ผู้บริโภค','จะงอยปากใหญ่แต่เบา เอื้อมเก็บผลไม้ปลายกิ่งได้','นกทูแคนช่วยกระจายเมล็ดพันธุ์ไม้ในป่า','จะงอยปากใหญ่เก็บผลไม้ปลายกิ่ง'],
+monkey:['🐒','ลิง','ผู้บริโภค','มือและหางจับกิ่งไม้ได้แน่น ปีนป่ายหาผลไม้บนเรือนยอด','ลิงกินผลไม้แล้วช่วยกระจายเมล็ดพันธุ์','มือและหางจับกิ่งไม้ ปีนป่ายได้ดี'],
+tiger:['🐅','เสือ','ผู้บริโภค','ลายทางพรางตัวกลมกลืนกับเงาไม้ กรงเล็บและเขี้ยวคม','เสืออยู่ปลายโซ่อาหารในป่า','ลายพรางตัว กรงเล็บเขี้ยวคม']});
+/* ===== ภาพวาดสัตว์และพืช (SVG) ===== */
+var el=(x,y,a,b,f,t='')=>`<ellipse cx='${x}' cy='${y}' rx='${a}' ry='${b}' fill='${f}'${t}/>`,
+ey=(x,y)=>`<circle cx='${x}' cy='${y}' r='5' fill='#fff'/><circle cx='${x+1}' cy='${y}' r='2.6' fill='#17332b'/>`,
+pa=(d,f,s,w)=>`<path d='${d}' fill='${f||'none'}'${s?` stroke='${s}' stroke-width='${w||3}' stroke-linecap='round'`:''}/>`,
+DT={
+fish:(a,b,x)=>pa('M78 50L98 32V68Z',b)+pa('M40 30Q52 12 64 30Z',b)+el(50,50,32,22,a)+(x?pa('M42 30v40M62 31v38','','#fff',7):'')+ey(30,45)+pa('M22 56q4 3 8 0','','#17332b',2),
+shark:(a,b)=>pa('M8 54Q45 26 96 50Q70 72 8 58Z',a)+pa('M48 36L60 10L70 42Z',a)+pa('M92 50L100 28V70Z',a)+pa('M14 58Q45 66 80 58Q50 74 14 58Z',b)+ey(28,50),
+bird:(a,b,c)=>pa('M38 78v14M54 78v14','',b,3)+el(48,58,24,22,a)+el(40,62,13,11,c||a,' opacity=.5')+el(66,34,13,13,a)+pa('M78 32L96 38L78 44Z',b)+ey(68,30)+pa('M26 58L6 70L28 70Z',a),
+quad:(a,b,c)=>pa('M70 56Q98 48 92 26','',a,6)+pa('M34 74v16M44 76v14M62 76v14M72 74v16','',a,8)+el(52,60,28,20,a)+(c?pa('M44 44v14M54 42v16M64 44v14','',c,4):'')+el(24,50,17,15,a)+el(16,35,6,9,a)+el(32,35,6,9,a)+el(16,36,3,5,b)+el(32,36,3,5,b)+ey(20,48)+el(9,55,3,2.5,'#17332b'),
+bug:(a,b,c)=>pa('M30 60L14 84M48 64L44 90M66 62L82 86','','#17332b',3)+pa('M30 40L18 20M40 36L38 16','','#17332b',2)+el(66,52,24,15,a)+(c?pa('M58 40v24M70 38v28M80 42v20','',c,6):'')+el(36,46,13,12,a)+ey(31,42)+el(62,36,22,12,b,' opacity=.6'),
+frog:(a,b)=>pa('M20 82Q10 92 28 90M80 82Q90 92 72 90','',a,8)+el(50,62,32,24,a)+el(50,70,20,12,b)+el(32,36,12,12,a)+el(68,36,12,12,a)+ey(32,34)+ey(68,34)+pa('M36 58Q50 68 64 58','','#17332b',3),
+snake:(a,b)=>pa('M12 80Q38 98 50 72T86 58','',a,13)+el(88,52,11,9,a)+ey(90,49)+el(30,90,3,3,b)+el(50,74,3,3,b)+el(70,64,3,3,b),
+lizard:(a,b)=>pa('M70 60Q92 60 96 36','',a,7)+pa('M26 76l-8 12M44 80l-2 12M62 80l4 12M76 74l10 10','',a,6)+el(50,62,28,12,a)+el(22,56,13,10,a)+ey(18,53)+el(40,60,4,2,b)+el(56,60,4,2,b),
+crab:(a,b)=>pa('M26 70L8 84M32 76L18 92M74 76L84 92M80 70L94 84','',a,5)+pa('M24 50Q8 40 14 24M76 50Q92 40 86 24','',a,6)+el(14,22,9,9,b)+el(86,22,9,9,b)+el(50,62,28,20,a)+ey(42,38)+ey(58,38),
+snail:(a,b)=>pa('M10 84Q50 94 94 84','',b,12)+pa('M18 78Q10 60 16 50','',b,7)+el(60,56,26,26,a)+pa('M60 56m-14 0a14 14 0 1 1 14 14','','#fff',4)+ey(15,50),
+rice:()=>pa('M30 100Q28 60 40 24M50 100V16M70 100Q72 60 60 24','','#4aa04c',5)+[[40,24],[50,16],[60,24],[44,36],[56,36],[48,50],[52,50]].map(p=>el(p[0],p[1],4,7,'#e6c04a')).join(''),
+weed:()=>pa('M50 98Q20 70 12 40M50 98Q40 50 46 18M50 98Q80 70 90 40','','#7acb5f',9),
+flower:a=>pa('M50 98V54','','#4aa04c',5)+el(36,82,12,5,'#4aa04c')+[0,72,144,216,288].map(t=>el(50+20*Math.cos(t*Math.PI/180),38+20*Math.sin(t*Math.PI/180),11,11,a)).join('')+el(50,38,9,9,'#ffc531'),
+cactus:()=>pa('M50 98V28','','#2f9e5a',22)+pa('M50 70H24V46M50 58H76V34','','#2f9e5a',11)+el(50,16,6,6,'#ff7aa8'),
+shrub:a=>[[30,70],[50,58],[70,70],[40,84],[62,84],[50,74]].map(p=>el(p[0],p[1],15,11,a)).join(''),
+tree:a=>pa('M50 62Q30 80 20 98M50 62Q70 80 80 98M50 62V98','','#5b4430',5)+pa('M50 66V40','','#5b4430',10)+el(50,28,30,20,a)+el(30,38,16,12,a)+el(70,38,16,12,a),
+alg:()=>pa('M30 98Q15 70 32 50Q46 30 30 8M50 98Q38 66 56 46Q68 26 54 8M70 98Q58 74 74 56','','#3dbb7c',7),
+plank:a=>[[30,40,10],[60,30,7],[70,60,12],[40,70,8],[20,66,5]].map(p=>el(p[0],p[1],p[2],p[2],a,' opacity=.8')).join(''),
+nem:(a,b)=>[20,32,44,56,68,80].map(x=>pa('M'+x+' 70Q'+(x-8)+' 40 '+(x%3?x+6:x-6)+' 20','',a,6)).join('')+el(50,82,34,14,b),
+mush:(a,b)=>pa('M40 56h20v34H40Z',b)+el(50,38,36,24,a)+el(36,32,6,5,'#fff')+el(62,28,5,4,'#fff'),
+barn:(a,b)=>pa('M24 90L40 30H60L76 90Z',a)+pa('M40 30L50 90M60 30L50 90','','#fff',2),
+sun:()=>[0,1,2,3,4,5,6,7].map(i=>`<path d='M50 6v14' stroke='#ffb000' stroke-width='6' stroke-linecap='round' transform='rotate(${i*45} 50 50)'/>`).join('')+el(50,50,22,22,'#ffc531')+pa('M40 54q10 10 20 0','','#a35a00',3)+el(42,46,2.5,3,'#a35a00')+el(58,46,2.5,3,'#a35a00'),
+water:()=>pa('M50 10Q80 50 80 66A30 30 0 0 1 20 66Q20 50 50 10Z','#3b9de0')+el(40,64,6,8,'#fff',' opacity=.5')},
+DS={sun:['sun'],water:['water'],rice:['rice'],weed:['weed'],flower:['flower','#ff7aa8'],bee:['bug','#ffc531','#bfe3f7','#17332b'],hopper:['bug','#7acb5f','#cdeea8'],mosq:['bug','#8a8f98','#dfe9f2'],rat:['quad','#9a8070','#f2a7b0'],frog:['frog','#58b45a','#d9f2b0'],snake:['snake','#8aa63a','#4d5d1a'],hawk:['bird','#8a5a3c','#ffc531','#e8d2b0'],mush:['mush','#e8534a','#f4ead5'],tree:['tree','#3a9a54'],crab:['crab','#e8534a','#ff8a6a'],snail:['snail','#c98f55','#e9d3a6'],fish:['fish','#e0a64a','#c98a2c'],heron:['bird','#e9eef2','#ffa94d','#cfd8df'],barn:['barn','#c9c2b4'],cactus:['cactus'],shrub:['shrub','#6bb85a'],beetle:['bug','#5b3a8a','#7a5aa8'],dmouse:['quad','#d8b07a','#f2a7b0'],lizard:['lizard','#9bb04a','#e8d04a'],bird:['bird','#c9854b','#ffa94d','#a96a30'],plank:['plank','#7acb5f'],alg:['alg'],shrimp:['bug','#ffb199','#ffe0d3'],rfish:['fish','#5ab4e8','#2f7fc0'],parrot:['fish','#38b6a8','#ff7aa8'],shark:['shark','#7f95a8','#e9eef2'],clown:['fish','#ff8a1f','#ff8a1f',1],nem:['nem','#ff7aa8','#c94a7a'],moss:['shrub','#a9cf9a'],krill:['bug','#ff9f86','#ffd7cc'],cod:['fish','#8aa3b8','#5f7a91'],seal:['quad','#9aa8b4','#6d7c88'],bear:['quad','#f6f9fc','#f2a7b0'],hare:['quad','#eef2f5','#f2a7b0'],fox:['quad','#f4a45a','#fff'],bigtree:['tree','#2a7d3e'],orchid:['flower','#c06cf0'],cater:['bug','#a6d854','#7aa63a','#7aa63a'],toucan:['bird','#17332b','#ffa94d','#fff'],monkey:['quad','#8a5a3c','#e8b98a'],tiger:['quad','#f0903a','#fff','#17332b']};
+function ic(k){var d=DS[k];return d&&DT[d[0]]?'<svg viewBox="0 0 100 100" style="width:1em;height:1em;display:block;overflow:visible" aria-hidden="true">'+DT[d[0]](d[1],d[2],d[3])+'</svg>':SP[k][0]}
+var TY=[['🤝','ช่วยกัน','ได้ประโยชน์ทั้งสองฝ่าย'],['🏠','อาศัยร่วม','ฝ่ายหนึ่งได้ อีกฝ่ายไม่ได้ไม่เสีย'],['🦟','ปรสิต','ฝ่ายหนึ่งได้ อีกฝ่ายเสียหาย'],['🍽️','ล่าเหยื่อ/กิน','ฝ่ายหนึ่งกินอีกฝ่าย'],['⚔️','แก่งแย่ง','ต้องการสิ่งเดียวกัน']];
+var MP=[{n:'ทุ่งนา',e:'🌾🐸🦅',sky:'linear-gradient(#7fd0f5,#e3f6c9)',far:'#8fcf75',gr:'#57a84f',water:0,
+ents:[['sun',120,360,72],['hawk',1050,330,58],['bee',640,240,34],['flower',610,100,44],['rice',200,78,60],['rice',360,78,60],['rice',900,78,60],['rice',1260,78,60],['rice',1550,78,60],['weed',480,72,44],['hopper',300,150,34],['hopper',1020,150,34],['rat',1400,88,46],['frog',720,62,50],['frog',1130,58,46],['mosq',790,170,28],['snake',1480,62,52],['mush',1650,58,40],['water',540,18,56]],
+ch:['rice','hopper','frog','snake','hawk'],
+g:[['rice','hopper'],['weed','hopper'],['rice','rat'],['hopper','frog'],['frog','snake'],['rat','snake'],['rat','hawk'],['snake','hawk'],['flower','bee']],
+r:[['bee','flower',0],['rice','weed',4],['mosq','frog',2]]},
+{n:'ป่าชายเลน',e:'🌳🦀🐟',sky:'linear-gradient(#9fdcf0,#f6ecc9)',far:'#7fb98a',gr:'#8a6a4a',water:1,
+ents:[['sun',150,360,72],['heron',900,210,64],['tree',300,100,84],['tree',700,100,84],['tree',1250,100,84],['tree',1600,100,84],['barn',340,76,32],['crab',520,56,46],['crab',1100,56,46],['snail',900,66,40],['snail',1450,76,40],['fish',600,14,46],['fish',1180,14,46],['mush',1700,64,36],['water',800,6,56]],
+ch:['tree','crab','fish','heron'],
+g:[['tree','crab'],['tree','snail'],['crab','fish'],['snail','heron'],['fish','heron']],
+r:[['barn','tree',1]]},
+{n:'ทะเลทราย',e:'🌵🦎🐍',sky:'linear-gradient(#ffcf7a,#fff0c4)',far:'#e9b868',gr:'#e2b865',water:0,
+ents:[['sun',140,350,80],['hawk',1100,320,56],['cactus',260,100,80],['cactus',900,100,90],['cactus',1500,100,76],['shrub',520,88,46],['shrub',1200,88,46],['shrub',1650,88,46],['beetle',620,100,28],['beetle',1320,96,28],['dmouse',760,92,40],['lizard',1000,84,44],['lizard',400,84,40],['snake',1380,70,48],['bird',320,200,34]],
+ch:['shrub','beetle','lizard','snake','hawk'],
+g:[['shrub','beetle'],['shrub','dmouse'],['cactus','dmouse'],['beetle','lizard'],['lizard','snake'],['dmouse','snake'],['snake','hawk'],['dmouse','hawk']],
+r:[['cactus','shrub',4],['bird','cactus',1]]},
+{n:'แนวปะการัง',e:'🐠🪸🦈',sky:'linear-gradient(#5fc8ee,#1f6fa8)',far:'#2f86b8',gr:'#e8d29a',water:0,
+ents:[['sun',140,380,64],['shark',1050,250,72],['plank',500,300,30],['plank',900,340,26],['alg',250,100,50],['alg',1300,100,50],['alg',1600,100,50],['shrimp',700,160,34],['shrimp',1400,170,30],['rfish',450,200,40],['rfish',1180,150,40],['parrot',1550,200,46],['nem',780,70,56],['clown',810,120,36]],
+ch:['plank','shrimp','rfish','shark'],
+g:[['plank','shrimp'],['shrimp','rfish'],['alg','parrot'],['rfish','shark'],['parrot','shark']],
+r:[['clown','nem',0]]},
+{n:'ขั้วโลกเหนือ',e:'🐻🦭🐟',sky:'linear-gradient(#bfe6ff,#f4fbff)',far:'#dcecf7',gr:'#f2f8fc',water:1,
+ents:[['sun',140,360,64],['bear',1050,92,74],['seal',650,70,50],['fox',1450,86,46],['hare',1250,88,40],['hare',350,88,40],['moss',200,80,40],['moss',900,80,40],['moss',1600,80,40],['plank',500,16,26],['plank',1100,20,24],['krill',720,14,28],['krill',1300,18,26],['cod',860,12,40],['cod',1500,16,38]],
+ch:['plank','krill','cod','seal','bear'],
+g:[['plank','krill'],['krill','cod'],['cod','seal'],['seal','bear'],['moss','hare'],['hare','fox'],['hare','bear']],
+r:[]},
+{n:'ป่าดิบชื้น',e:'🌳🐒🐅',sky:'linear-gradient(#8fe0c0,#d8f2b8)',far:'#4fa66a',gr:'#4a7d3a',water:0,
+ents:[['sun',140,360,64],['tiger',1450,90,70],['monkey',700,230,46],['bigtree',260,100,110],['bigtree',700,100,110],['bigtree',1150,100,110],['bigtree',1600,100,100],['orchid',310,200,36],['cater',720,190,26],['toucan',1180,260,46],['hawk',1000,340,52],['mush',520,60,40],['mush',1350,60,40]],
+ch:['bigtree','cater','toucan','hawk'],
+g:[['bigtree','cater'],['bigtree','monkey'],['cater','toucan'],['toucan','hawk'],['monkey','tiger']],
+r:[['orchid','bigtree',1],['monkey','bigtree',0]]}];
+var M,mode,sel,rp,cp,rm,rcnt,ac,col,sheet,H=460;
+
+/* ===== หน้าเปิด ===== */
+function title(){A.innerHTML='<div class="scr ttl"><div class="sunb fl">☀️</div><span class="fl" style="left:8%;top:22%">🦋</span><span class="fl" style="right:12%;top:38%;animation-delay:1s">🐝</span><span class="fl" style="left:16%;bottom:30%;animation-delay:2s">🐸</span><span class="fl" style="right:20%;bottom:26%;animation-delay:.5s">🦅</span><div class="hill b"></div><div class="hill"></div><div style="position:relative;z-index:2"><div style="font-size:64px">🦉🔭</div><h1>นักสำรวจ<br>ระบบนิเวศ</h1><p>ออกเดินทางไปกับนกฮูกนักสำรวจ ค้นหาสิ่งมีชีวิต ต่อโซ่อาหาร และไขความลับของธรรมชาติ</p><button class="go" onclick="maps()">เริ่มผจญภัย</button></div><div class="cr">สร้างโดย Phimphakan Saengmao</div></div>'}
+
+/* ===== เลือกแผนที่ ===== */
+function maps(){IN=0;amb(0);sfx('tap');var cs=['#3f9b4b','#2f8f9d','#c9892f','#2a79b8','#5a8fb8','#2f7d4e'];A.innerHTML='<div class="scr mp"><div class="w"><h2 style="font-size:28px">🗺️ เลือกแผนที่</h2><p>⭐ ดาวทั้งหมด '+tot()+'/30 · นกฮูกบอกว่าแต่ละแห่งมีภารกิจ 5 อย่าง<br>⬇️ เลื่อนลงด้วยล้อเมาส์หรือนิ้วเพื่อดูแผนที่ทั้ง 6 แห่ง</p>'+MP.map(function(m,i){return '<button class="mc" style="background:'+cs[i]+'" onclick="scene('+i+')"><div class="t" style="background:'+m.sky+'">'+m.e+'</div><div class="d"><b>'+m.n+'</b><br>เก็บดาวแล้ว '+stars(i)+'/5</div></button>'}).join('')+'<div class="jcard"><h3>🎚️ ระดับความยาก</h3><p>เลือกวิธีเรียนรู้ที่เหมาะกับผู้เล่น</p><div class="difficulty"><button onclick="setDifficulty(&#39;เริ่มต้น&#39;)">🌱 เริ่มต้น</button><button onclick="setDifficulty(&#39;กลาง&#39;)">🌿 กลาง</button><button onclick="setDifficulty(&#39;ท้าทาย&#39;)">🌳 ท้าทาย</button></div><small>ระดับนี้เป็นตัวเลือกช่วยจัดประสบการณ์การเล่น</small></div><button class="go" style="width:100%;margin:8px 0" onclick="journal(&quot;maps&quot;)">📒 เปิดสมุดภาคสนามและคำศัพท์</button><button onclick="title()">← กลับหน้าเปิด</button><div class="cr">สร้างโดย Phimphakan Saengmao</div></div></div>'}
+
+/* ===== ฉาก ===== */
+function nm(k){return SP[k][1]}
+function eats(k){return M.g.filter(function(e){return e[1]==k}).map(function(e){return e[0]})}
+function eatenBy(k){return M.g.filter(function(e){return e[0]==k}).map(function(e){return e[1]})}
+function scene(i){amb(1,i);IN=1;M=MP[i];M.i=i;mode='x';sel=[];cp=[];rm={};rcnt={};ac={};sheet='';col=S['c'+i]||{};env=S['env'+i]||{water:65,heat:50,light:70};
+var far='';[[0,120,200,'#8fcf75'],[220,260,150,0],[520,220,190,0],[820,300,160,0],[1200,240,200,0],[1500,260,170,0]].forEach(function(f){far+='<i style="left:'+f[0]+'px;width:'+f[1]+'px;height:'+f[2]+'px;background:'+M.far+'"></i>'});
+A.innerHTML='<div class="scr"><div class="top"><button onclick="maps()" aria-label="กลับ">←</button><b>'+M.e.slice(0,2)+' '+M.n+'</b><span class="st" id="st"></span><button onclick="journal(&quot;scene&quot;)" aria-label="สมุดภาคสนาม" title="สมุดภาคสนาม">📒</button></div><div class="owl" id="ow"></div><div class="sc" id="sc" style="background:'+M.sky+'"><div class="stg" id="stg"><div class="far" id="far">'+far+'</div>'+deco(i,0)+'<div class="gnd" style="background:'+M.gr+'">'+((M.water||i===0)?'<div class="wat"></div>':'')+'</div>'+deco(i,1)+'<svg class="ov" id="ov" width="1800" height="'+H+'"></svg><div class="envfx" id="envfx"></div>'+
+M.ents.map(function(e,j){var s=SP[e[0]],ab=s[2]=='ไม่มีชีวิต';return '<button class="en'+(ab?'':' an')+'" id="e'+j+'" style="left:'+e[1]+'px;bottom:'+e[2]+'px;font-size:'+e[3]+'px;animation-delay:'+(j%5)*.7+'s" onclick="tap('+j+')" aria-label="'+s[1]+'">'+ic(e[0])+'<small id="n'+j+'"></small></button>'}).join('')+'</div></div><div id="sheet"></div><div class="tools"><button onclick="thaiMissions()">🇹🇭 ภารกิจไทย</button><button onclick="speakScene()">🔊 อ่านให้ฟัง</button><button onclick="energyPyramid()">⚡ พีระมิดพลังงาน</button><button onclick="designAnimal()">🧬 ออกแบบสัตว์</button></div><div class="tb">'+[['x','🔍','สำรวจ'],['r','🤝','สัมพันธ์'],['c','🔗','โซ่อาหาร'],['g','🌍','ถ้าหายไป'],['e','🌦️','ทดลอง'],['q','📋','ภารกิจ']].map(function(t){return '<button id="b'+t[0]+'" onclick="setm(\''+t[0]+'\')">'+t[1]+'<br>'+t[2]+'</button>'}).join('')+'</div></div>';
+var sc=document.getElementById('sc'),fr=document.getElementById('far');fitScene();window.onresize=fitScene;sc.addEventListener('scroll',function(){fr.style.transform='translateX('+sc.scrollLeft*.5+'px)'});setm('x')}
+function fitScene(){var sc=document.getElementById('sc'),st=document.getElementById('stg');if(!sc||!st)return;/* ปรับขนาดฉากให้เห็นเป็นพื้นที่เกมเต็มหน้าจอ โดยยังเลื่อนสำรวจได้บนจอแคบ */var w=Math.max(320,sc.clientWidth),scale=Math.min(1,w/1800);st.style.transformOrigin='left bottom';st.style.transform='scale('+scale+')';st.style.marginRight=(1800*(scale-1))+'px';}
+function speakThai(text){if(!('speechSynthesis' in window)){say('อุปกรณ์นี้ไม่รองรับการอ่านออกเสียง');return}window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(String(text||''));u.lang='th-TH';u.rate=.88;var vs=window.speechSynthesis.getVoices();var th=vs.find(function(v){return /^th/i.test(v.lang)});if(th)u.voice=th;window.speechSynthesis.speak(u)}
+function speakScene(){var txt=(M?M.n+' ระบบนิเวศ '+M.ents.map(function(e){return SP[e[0]][1]}).slice(0,12).join(' '):'นักสำรวจระบบนิเวศ');var ow=document.getElementById('ow');if(ow&&ow.textContent)txt+=' ภารกิจ '+ow.textContent;speakThai(txt)}
+function thaiMissions(){var missions=[{title:'🌾 ภารกิจนาข้าว: ใช้สารกำจัดแมลง',story:'ชาวนาใช้สารกำจัดแมลงเพื่อปกป้องต้นข้าว แมลงบางชนิดลดลง กบอาจมีอาหารน้อยลง และงูที่กินกบอาจได้รับผลกระทบต่อไปในห่วงโซ่อาหาร',opts:['ใช้สารเท่าที่จำเป็นตามคำแนะนำและพิจารณาวิธีควบคุมศัตรูพืชแบบผสมผสาน','ฉีดสารเพิ่มขึ้นโดยไม่ตรวจสอบผลกระทบ','ปล่อยสารลงแหล่งน้ำ'],good:0,why:'การลดการใช้สารอย่างเหมาะสมและพิจารณาวิธีอื่นช่วยลดความเสี่ยงต่อสิ่งมีชีวิตที่ไม่ใช่ศัตรูพืชด้วย'}, {title:'🦀 ภารกิจป่าชายเลน: สร้างบ่อกุ้ง',story:'พื้นที่ป่าชายเลนบางส่วนกำลังถูกเปลี่ยนเป็นบ่อเลี้ยงกุ้ง ปู ปลา และสัตว์วัยอ่อนอาจสูญเสียที่อยู่อาศัยและแหล่งอาหาร',opts:['รักษาป่าชายเลนและวางแผนเพาะเลี้ยงโดยลดผลกระทบต่อพื้นที่ธรรมชาติ','ตัดป่าชายเลนทั้งหมดโดยไม่ประเมินผล','ทิ้งน้ำเสียจากบ่อสู่ธรรมชาติโดยตรง'],good:0,why:'ป่าชายเลนเป็นแหล่งอนุบาลสัตว์น้ำและช่วยคุ้มครองชายฝั่ง การวางแผนที่ลดผลกระทบจึงสำคัญ'}, {title:'🧴 ภารกิจแม่น้ำ: ขยะพลาสติก',story:'มีขยะพลาสติกไหลลงแม่น้ำ สัตว์น้ำอาจกินขยะหรือพันติดกับขยะได้',opts:['ลดใช้พลาสติก คัดแยกขยะ และเก็บขยะอย่างปลอดภัย','ทิ้งขยะลงน้ำให้ไหลไปที่อื่น','เผาขยะพลาสติกใกล้แม่น้ำ'],good:0,why:'การลดขยะตั้งแต่ต้นทางและทิ้งให้ถูกวิธีช่วยลดอันตรายต่อสัตว์และคุณภาพน้ำ'}];var h='<h3>🇹🇭 ภารกิจตัดสินใจจากสถานการณ์จริง</h3><p>อ่านเรื่อง เลือกแนวทาง แล้วดูผลกระทบต่อระบบนิเวศ</p>'+missions.map(function(m,i){return '<div class="missioncard"><h3>'+m.title+'</h3><p>'+m.story+'</p>'+m.opts.map(function(o,j){return '<button onclick="missionResult('+i+','+j+')">'+(j+1)+'. '+o+'</button>'}).join('')+'<div id="mr'+i+'"></div></div>'}).join('')+'<button onclick="shw()">ปิดภารกิจ</button>';shw(h)}
+function missionResult(i,j){var ms=[{good:0,why:'การลดการใช้สารอย่างเหมาะสมและพิจารณาวิธีอื่นช่วยลดความเสี่ยงต่อสิ่งมีชีวิตที่ไม่ใช่ศัตรูพืชด้วย'},{good:0,why:'ป่าชายเลนเป็นแหล่งอนุบาลสัตว์น้ำและช่วยคุ้มครองชายฝั่ง การวางแผนที่ลดผลกระทบจึงสำคัญ'},{good:0,why:'การลดขยะตั้งแต่ต้นทางและทิ้งให้ถูกวิธีช่วยลดอันตรายต่อสัตว์และคุณภาพน้ำ'}];var m=ms[i],el=document.getElementById('mr'+i);if(!el)return;el.className='ecoresult';el.innerHTML=(j===m.good?'🌟 เป็นทางเลือกที่ช่วยลดผลกระทบได้มากกว่า':'🔎 ลองพิจารณาผลที่อาจตามมาอีกครั้ง')+'<br>'+m.why+'<br><button onclick="speakThai(this.parentNode.innerText)">🔊 ฟังคำอธิบาย</button>';if(j===m.good){var key='thai'+i;if(!S[key]){S[key]=1;sv();say('⭐ ทำภารกิจสถานการณ์ไทยสำเร็จ')}}}
+function energyPyramid(){var h='<h3>⚡ พีระมิดพลังงาน</h3><p>พลังงานส่วนใหญ่เริ่มจากดวงอาทิตย์ เข้าสู่ผู้ผลิต แล้วส่งต่อไปยังผู้บริโภค แต่พลังงานที่ส่งต่อจะลดลงในแต่ละระดับ</p><div style="max-width:440px;margin:12px auto;text-align:center;color:#17332b"><div style="background:#f6b94b;margin:auto;width:38%;padding:12px;border-radius:10px">ผู้บริโภคลำดับสูง 🦅<br><small>พลังงานน้อยกว่า</small></div><div style="background:#f4d879;margin:5px auto;width:60%;padding:12px;border-radius:10px">ผู้บริโภค 🐸<br><small>ได้รับพลังงานบางส่วน</small></div><div style="background:#9bd68d;margin:5px auto;width:82%;padding:12px;border-radius:10px">ผู้ผลิต 🌿<br><small>รับพลังงานจากแสงอาทิตย์</small></div><div style="font-size:26px">☀️ แสงอาทิตย์</div></div><p>💡 พลังงานส่วนหนึ่งถูกใช้ในการดำรงชีวิตและสูญเสียเป็นความร้อน จึงมีพลังงานส่งต่อไปยังระดับถัดไปน้อยลง</p><button onclick="speakThai(document.getElementById(\'sheet\').innerText)">🔊 อ่านออกเสียง</button> <button onclick="shw()">ปิด</button>';shw(h)}
+function designAnimal(){var colors=['เขียว','น้ำตาล','เหลือง','ฟ้า'];var h='<h3>🧬 มินิเกม: ออกแบบสัตว์ของฉัน</h3><p>เลือกคุณลักษณะ แล้วลองคิดว่าสัตว์ของคุณเหมาะกับถิ่นอาศัยแบบใด</p><div class="animal-preview" id="animalPreview">🐸</div><label>รูปร่างขา <select id="legs" onchange="updateAnimal()"><option value="สั้น">ขาสั้น</option><option value="ยาว">ขายาว</option><option value="มีพังผืด">ขามีพังผืด</option></select></label><br><label>ผิว/ลำตัว <select id="skin" onchange="updateAnimal()"><option value="ลื่น">ผิวลื่น</option><option value="เกล็ด">เกล็ด</option><option value="ขนหนา">ขนหนา</option></select></label><br><label>ถิ่นอาศัย <select id="home" onchange="updateAnimal()"><option value="พื้นที่ชุ่มน้ำ">พื้นที่ชุ่มน้ำ</option><option value="ทะเลทราย">ทะเลทราย</option><option value="เขตหนาว">เขตหนาว</option><option value="ป่า">ป่า</option></select></label><div id="animalAdvice" class="ecoresult"></div><button onclick="speakThai(document.getElementById(\'animalAdvice\').innerText)">🔊 ฟังคำแนะนำ</button> <button onclick="shw()">ปิด</button>';shw(h);updateAnimal()}
+function updateAnimal(){var l=document.getElementById('legs'),s=document.getElementById('skin'),h=document.getElementById('home');if(!l||!s||!h)return;var emoji={'พื้นที่ชุ่มน้ำ':'🐸','ทะเลทราย':'🦎','เขตหนาว':'🐻‍❄️','ป่า':'🦊'}[h.value];document.getElementById('animalPreview').textContent=emoji;var match=(h.value==='พื้นที่ชุ่มน้ำ'&&(l.value==='มีพังผืด'||s.value==='ลื่น'))||(h.value==='ทะเลทราย'&&s.value==='เกล็ด')||(h.value==='เขตหนาว'&&s.value==='ขนหนา')||(h.value==='ป่า'&&l.value==='ยาว');document.getElementById('animalAdvice').textContent=match?'ลักษณะที่เลือกอาจช่วยให้สัตว์เหมาะกับสภาพแวดล้อมนี้ได้ แต่ยังต้องพิจารณาอาหาร การหลบภัย และปัจจัยอื่นร่วมด้วย':'ลองเปลี่ยนลักษณะบางอย่างแล้วสังเกตว่าอะไรอาจช่วยให้สัตว์อยู่รอดในถิ่นอาศัยนี้ได้ดีขึ้น'}
+function setDifficulty(level){S.difficulty=level;sv();say('ตั้งระดับเป็น '+level+' แล้ว')}
+var HINT={x:'แตะสิ่งต่าง ๆ ในฉากเพื่อดูว่าคืออะไร แล้วเลื่อนซ้าย-ขวาสำรวจให้ทั่ว!',r:'แตะสิ่งมีชีวิต 2 ชนิดที่คิดว่ามีความสัมพันธ์กัน',c:'แตะเรียงโซ่อาหารตั้งแต่ผู้ผลิตไปจนถึงผู้ล่าบนสุด',g:'แตะสัตว์หรือพืชที่ต้องการให้หายไป แล้วดูผลกระทบ แตะซ้ำเพื่อให้กลับมา',e:'ปรับน้ำ ความร้อน และแสง แล้วสังเกตการเปลี่ยนแปลงของฉากและสิ่งมีชีวิต'};
+function setm(m){mode=m;sel=[];cp=[];rm={};sheet='';ov();draw();
+['x','r','c','g','e','q'].forEach(function(k){document.getElementById('b'+k).classList.toggle('on',k==m)});
+document.getElementById('ow').textContent='🦉 '+(HINT[m]||'นี่คือภารกิจของแผนที่นี้ ทำให้ครบเพื่อเก็บดาว!');
+document.getElementById('st').textContent='⭐ '+stars(M.i)+'/5';
+if(m=='q')quests();else if(m=='e')envPanel();else document.getElementById('sheet').innerHTML='';applyEnv()}
+function draw(){M.ents.forEach(function(e,j){var b=document.getElementById('e'+j);b.className='en'+(SP[e[0]][2]=='ไม่มีชีวิต'?'':' an')+(sel.indexOf(j)>=0?' s':'')+(mode=='g'&&rm.eff?(rm.eff[e[0]]||''):'');
+if(mode=='g'&&rm.k==e[0])b.className+=' dead';document.getElementById('n'+j).textContent=(mode=='x'&&col[e[0]])?SP[e[0]][1]:''});applyEnv()}
+function ov(l){document.getElementById('ov').innerHTML=(l||[]).map(function(p){var a=M.ents[p[0]],b=M.ents[p[1]],x1=a[1]+a[3]/2,y1=H-a[2]-a[3]/2,x2=b[1]+b[3]/2,y2=H-b[2]-b[3]/2;return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+p[2]+'" stroke-width="5" stroke-dasharray="10 6" stroke-linecap="round"/>'+(p[3]?'<polygon points="0,-9 18,0 0,9" fill="'+p[2]+'" transform="translate('+(x1+(x2-x1)*.6)+','+(y1+(y2-y1)*.6)+') rotate('+Math.atan2(y2-y1,x2-x1)*180/Math.PI+')"/>':'')}).join('')}
+function shw(h){document.getElementById('sheet').innerHTML=h?'<div class="sh">'+h+'</div>':''}
+function star(q){if(!S['m'+M.i+'q'+q]){S['m'+M.i+'q'+q]=1;sv();say('⭐ ได้ดาวเพิ่มแล้ว!');sfx('star');document.getElementById('st').textContent='⭐ '+stars(M.i)+'/5'}}
+var env={water:65,heat:50,light:70};
+function envPanel(){
+var h='<h3>🌦️ ห้องทดลองปัจจัยสิ่งแวดล้อม</h3><p>ลองปรับค่าแล้วสังเกตว่าสิ่งมีชีวิตตอบสนองอย่างไร ค่าที่เห็นเป็นแบบจำลองเพื่อการเรียนรู้</p><div class="envctrl">'+
+[['water','💧 ปริมาณน้ำ','น้ำ'],['heat','🌡️ ความร้อน','ร้อน'],['light','☀️ แสงสว่าง','แสง']].map(function(a){return '<label class="envrow"><b>'+a[1]+'</b><input type="range" min="0" max="100" value="'+env[a[0]]+'" oninput="changeEnv(\''+a[0]+'\',this.value)"><span id="v'+a[0]+'">'+env[a[0]]+'</span></label>'}).join('')+
+'</div><div id="envread" class="envread"></div><button onclick="resetEnv()">↺ คืนค่าเริ่มต้น</button> <button onclick="shw()">ปิด</button>';
+shw(h);applyEnv();
+}
+function changeEnv(k,v){env[k]=Number(v);S['env'+M.i]=env;sv();var el=document.getElementById('v'+k);if(el)el.textContent=v;applyEnv()}
+function resetEnv(){env={water:65,heat:50,light:70};S['env'+M.i]=env;sv();envPanel()}
+function applyEnv(){
+if(!M||!document.getElementById('sc'))return;
+var sc=document.getElementById('sc'),st=document.getElementById('stg'),wat=st.querySelector('.wat'),gnd=st.querySelector('.gnd'),fx=document.getElementById('envfx');
+if(env.light<20){sc.style.background='linear-gradient(#182c50,#59677b)'}else if(env.heat>82){sc.style.background='linear-gradient(#f5a35a,#f9d69a)'}else{sc.style.background=M.sky}
+if(st)st.style.filter='brightness('+(0.75+env.light/280)+') saturate('+(0.72+env.light/250)+')';
+if(wat){wat.style.height=(8+env.water*.65)+'px';wat.style.opacity=String(.25+env.water/130)}
+if(gnd){gnd.style.background=(env.water<25||env.heat>82)?'#b79a61':M.gr}
+if(fx){var alpha=env.heat>82?Math.min(.22,(env.heat-82)/100):0;fx.style.background=env.light<20?'rgba(12,24,55,.34)':(alpha?'rgba(255,95,20,'+alpha+')':'transparent')}
+var stressed=[],plants=['rice','weed','flower','tree','cactus','shrub','grass','algae','kelp','coral','moss'];
+M.ents.forEach(function(e,j){var k=e[0],b=document.getElementById('e'+j);if(!b)return;b.classList.remove('env-wilt','env-stress');if((env.water<25||env.heat>82)&&plants.indexOf(k)>=0&&k!=='cactus'){b.classList.add('env-wilt');stressed.push(SP[k][1]+' อาจเหี่ยวหรือเติบโตช้าลง')}if((env.water<18||env.heat>92)&&['frog','fish','crab','snail','heron'].indexOf(k)>=0){b.classList.add('env-stress');stressed.push(SP[k][1]+' อาจย้ายถิ่นหรืออยู่รอดยากขึ้น')}});
+var notes=[];if(env.water<25)notes.push('น้ำน้อย: พืชที่ต้องการน้ำอาจเหี่ยว และสัตว์ที่พึ่งพาแหล่งน้ำได้รับผลกระทบ');else if(env.water>75)notes.push('น้ำมาก: แหล่งน้ำเพิ่มขึ้น แต่บางพื้นที่อาจมีน้ำท่วม');else notes.push('น้ำอยู่ในระดับปานกลาง');if(env.heat>82)notes.push('ร้อนจัด: พืชสูญเสียน้ำมากขึ้นและสัตว์บางชนิดเครียด');else if(env.heat<20)notes.push('อากาศเย็น: สิ่งมีชีวิตบางชนิดอาจทำกิจกรรมช้าลง');else notes.push('อุณหภูมิอยู่ในช่วงปานกลาง');if(env.light<20)notes.push('แสงน้อย: พืชสังเคราะห์ด้วยแสงได้น้อยลง');else notes.push('มีแสงให้พืชใช้สังเคราะห์ด้วยแสง');
+var read=document.getElementById('envread');if(read)read.innerHTML='<b>🔎 สิ่งที่สังเกตได้</b><br>'+notes.join('<br>')+(stressed.length?'<br><b>ในฉากนี้:</b> '+stressed.join(' · '):'');
+}
+function journal(from){
+var ret=from||'maps';window.journalReturn=ret;var seen=[];MP.forEach(function(m,i){var c=S['c'+i]||{};Object.keys(c).forEach(function(k){if(c[k]&&!seen.some(function(x){return x.k===k}))seen.push({k:k,map:m.n})})});
+var cards=seen.length?seen.map(function(x){var d=SP[x.k];return '<div class="jcard"><div style="font-size:36px">'+ic(x.k)+'</div><h3>'+d[1]+'</h3><span class="jword">'+d[2]+'</span><p>'+d[3]+'</p><small>พบในแผนที่: '+x.map+'</small></div>'}).join(''):'<div class="jcard"><h3>ยังไม่มีสิ่งมีชีวิตในสมุด</h3><p>กลับไปที่แผนที่แล้วแตะสิ่งมีชีวิตเพื่อบันทึกการค้นพบ จากนั้นรายการจะปรากฏที่นี่</p></div>';
+var vocab=[['ผู้ผลิต','สิ่งมีชีวิตที่สร้างอาหารเองได้ เช่น พืช โดยใช้พลังงานแสง'],['ผู้บริโภค','สิ่งมีชีวิตที่กินสิ่งมีชีวิตอื่นเพื่อรับพลังงาน'],['ผู้ย่อยสลาย','สิ่งมีชีวิต เช่น เห็ดรา ที่ย่อยซากและคืนธาตุอาหารสู่สิ่งแวดล้อม'],['การปรับตัว','ลักษณะหรือพฤติกรรมที่ช่วยให้สิ่งมีชีวิตอยู่รอดในสภาพแวดล้อม'],['ปัจจัยไม่มีชีวิต','สิ่งแวดล้อมที่ไม่ใช่สิ่งมีชีวิต เช่น น้ำ แสง อุณหภูมิ และดิน'],['สมดุลระบบนิเวศ','ภาวะที่สิ่งมีชีวิตและสิ่งแวดล้อมมีความสัมพันธ์กันและเปลี่ยนแปลงอย่างต่อเนื่อง']];
+A.innerHTML='<div class="journal"><div class="jw"><div class="jtop"><button onclick="closeJournal()">← กลับ</button><h2>📒 สมุดภาคสนาม</h2></div><p>สิ่งมีชีวิตที่คุณเคยสำรวจ '+seen.length+' ชนิด · บัตรคำศัพท์สำหรับทบทวน</p><h3 style="margin:16px 0 8px">🔍 สิ่งมีชีวิตที่ค้นพบ</h3><div class="jgrid">'+cards+'</div><h3 style="margin:22px 0 8px">📚 คำศัพท์นักสำรวจ</h3><div class="jgrid">'+vocab.map(function(v){return '<div class="jcard"><h3>'+v[0]+'</h3><p>'+v[1]+'</p></div>'}).join('')+'</div></div></div>';
+}
+function closeJournal(){if(window.journalReturn==='scene'&&M)scene(M.i);else maps()}
+function tap(j){var k=M.ents[j][0],s=SP[k],ab=s[2]=='ไม่มีชีวิต';sfx('tap');
+if(mode=='x'){col[k]=1;S['c'+M.i]=col;sv();var ks=Object.keys(M.ents.reduce(function(o,e){o[e[0]]=1;return o},{}));if(ks.every(function(x){return col[x]}))star(1);draw();info(k)}
+else if(mode=='r'){if(ab)return say('เลือกสิ่งมีชีวิตนะ');if(sel.indexOf(j)>=0)return;sel.push(j);draw();if(sel.length==2)relq()}
+else if(mode=='c'){if(ab)return say('แตะสิ่งมีชีวิต');if(k==M.ch[cp.length]){cp.push(j);var l=[];for(var i=1;i<cp.length;i++)l.push([cp[i-1],cp[i],'#ff8a00',1]);ov(l);sel=cp.slice();draw();
+if(cp.length==M.ch.length){star(3);shw('<h3>🎉 ต่อโซ่อาหารสำเร็จ!</h3><p>'+M.ch.map(function(x){return SP[x][0]}).join(' ➜ ')+'</p><p>ลูกศรชี้จากผู้ถูกกินไปหาผู้กิน พลังงานเริ่มจากดวงอาทิตย์ ผ่านผู้ผลิต ไปยังผู้บริโภคตามลำดับ</p><button class="go" onclick="setm(\'c\')">เล่นอีกครั้ง</button>')}}
+else say(cp.length?'🦉 ยังไม่ใช่ ลองดูว่าใครกิน '+nm(M.ch[cp.length-1])+' ต่อ':'🦉 เริ่มที่ผู้ผลิต คือพืชที่สร้างอาหารเองได้')}
+else if(mode=='g'){if(ab)return say('แตะสิ่งมีชีวิตที่อยากให้หายไป');gone(k)}
+else if(mode=='q'){info(k)}}
+function info(k){var s=SP[k],ab=s[2]=='ไม่มีชีวิต',a=eats(k).map(nm).join(', ')||'-',b=eatenBy(k).map(nm).join(', ')||'-';
+shw('<div style="display:flex;gap:12px;align-items:center"><span style="font-size:60px;line-height:1">'+ic(k)+'</span><div><h3>'+s[1]+'</h3><span class="tg">'+s[2]+'</span></div><button style="margin-left:auto" onclick="shw()">✕</button></div>'+
+(ab?'':'<p><b>กินอะไร:</b> '+(s[2]=='ผู้ผลิต'?'สร้างอาหารเองจากแสงแดด':a)+'<br><b>ใครกินมัน:</b> '+b+'<br>')+'<b>'+(ab?'ความสำคัญ':'การปรับตัว')+':</b> '+s[3]+'<br>💡 '+s[4]+'</p>'+(ab?'':'<button class="go" onclick="aq(\''+k+'\')">🧠 ทดสอบการปรับตัว</button>'))}
+function aq(k){var o=sh([k].concat(sh(Object.keys(SP).filter(function(x){return x!=k&&SP[x][2]!='ไม่มีชีวิต'})).slice(0,2)));
+shw('<h3>'+SP[k][0]+' ลักษณะไหนช่วยให้'+nm(k)+'อยู่รอด?</h3>'+o.map(function(x){return '<button class="o" onclick="aa(this,'+(x==k?1:0)+',\''+k+'\')">'+SP[x][5]+'</button>'}).join('')+'<div id="fb"></div>')}
+function aa(b,ok,k){sfx(ok?'ok':'no');document.querySelectorAll('.sh .o').forEach(function(x){x.disabled=true});b.classList.add(ok?'ok':'no');document.getElementById('fb').innerHTML='<p>'+(ok?'ถูกต้อง! 🎉':'ยังไม่ใช่ คำตอบคือ “'+SP[k][5]+'”')+'</p>';if(ok){ac[k]=1;if(Object.keys(ac).length>=2)star(5)}}
+function relq(){var a=M.ents[sel[0]][0],b=M.ents[sel[1]][0],ans=-1;
+M.r.forEach(function(r){if((r[0]==a&&r[1]==b)||(r[0]==b&&r[1]==a))ans=r[2]});if(ans<0&&M.g.some(function(e){return(e[0]==a&&e[1]==b)||(e[0]==b&&e[1]==a)}))ans=3;
+if(a==b)ans=4;
+if(ans<0){shw('<h3>'+SP[a][0]+' + '+SP[b][0]+'</h3><p>🦉 สองชนิดนี้ไม่ได้เกี่ยวข้องกันโดยตรง ลองหาคู่อื่นที่อยู่ใกล้กันหรือกินกัน</p><button class="go" onclick="setm(\'r\')">เลือกใหม่</button>');return}
+window.RA=ans;shw('<h3>'+SP[a][0]+' + '+SP[b][0]+' เป็นความสัมพันธ์แบบไหน?</h3>'+TY.map(function(t,i){return '<button class="o" onclick="ra('+i+')">'+t[0]+' <b>'+t[1]+'</b> <small>'+t[2]+'</small></button>'}).join('')+'<div id="fb"></div>')}
+function ra(i){var ok=i==RA,k=sel.slice().sort().join();sfx(ok?'ok':'no');document.querySelectorAll('.sh .o').forEach(function(x,j){x.disabled=true;if(j==RA)x.classList.add('ok');else if(j==i)x.classList.add('no')});
+if(ok){rcnt[k]=1;ov([[sel[0],sel[1],['#2a9d6a','#2a9d6a','#e8534a','#ff8a00','#8a5cf5'][RA],RA==3]]);if(Object.keys(rcnt).length>=3)star(2)}
+document.getElementById('fb').innerHTML='<p>'+(ok?'ถูกต้อง! 🎉 ('+Object.keys(rcnt).length+'/3 คู่)':'ยังไม่ใช่ คำตอบคือ “'+TY[RA][1]+'” เพราะ'+TY[RA][2])+'</p><button class="go" onclick="sel=[];draw();shw()">คู่ต่อไป</button>'}
+function gone(k){var all=M.ents.map(function(e){return e[0]}).filter(function(x,i,a){return a.indexOf(x)==i&&SP[x][2]!='ไม่มีชีวิต'});
+if(rm.k==k){rm={};draw();shw();return}
+var dead={};dead[k]=1;var ch=1;while(ch){ch=0;all.forEach(function(s){var p=eats(s);if(!dead[s]&&p.length&&p.every(function(x){return dead[x]})){dead[s]=1;ch=1}})}
+var eff={},tx=[];all.forEach(function(s){if(s==k)return;var p=eats(s);if(dead[s]){eff[s]=' dn';tx.push(SP[s][0]+' '+nm(s)+' 📉 อาหารที่พึ่งพาหายไป อาจอยู่ได้ยากขึ้น')}else if(p.some(function(x){return dead[x]})){eff[s]=' dn';tx.push(SP[s][0]+' '+nm(s)+' 📉 อาหารลดลง จำนวนอาจลดลง')}else if(eatenBy(s).indexOf(k)>=0){eff[s]=' up';tx.push(SP[s][0]+' '+nm(s)+' 📈 ผู้ล่าหายไป จำนวนอาจเพิ่มขึ้น')}});
+rm={k:k,eff:eff};sfx('no');var seen=S['g'+M.i]||{};seen[k]=1;S['g'+M.i]=seen;sv();if(Object.keys(seen).length>=2)star(4);draw();
+var affected=all.filter(function(x){return x!==k&&(eff[x]||x===k)}).slice(0,3);if(!affected.length)affected=all.filter(function(x){return x!==k}).slice(0,2);
+var series=affected.map(function(x,idx){var start=100,vals=[start];for(var t=1;t<=3;t++){var delta=eff[x].trim()==='up'?18:eff[x].trim()==='dn'?-22:(idx%2===0?4:-4);vals.push(Math.max(0,Math.min(160,vals[t-1]+delta)))}return {k:x,vals:vals}});
+var colors=['#2a9d6a','#e8534a','#3b9de0'];var svg='<svg viewBox="0 0 340 180" role="img" aria-label="กราฟจำลองการเปลี่ยนแปลงประชากร"><line x1="36" y1="18" x2="36" y2="145" stroke="currentColor" opacity=".5"/><line x1="36" y1="145" x2="320" y2="145" stroke="currentColor" opacity=".5"/>';
+[0,50,100,150].forEach(function(v){var y=145-v*.78;svg+='<line x1="36" y1="'+y+'" x2="320" y2="'+y+'" stroke="currentColor" opacity=".12"/><text x="29" y="'+(y+4)+'" text-anchor="end" font-size="10" fill="currentColor">'+v+'</text>'});
+['เริ่ม','ช่วง 1','ช่วง 2','ช่วง 3'].forEach(function(t,i){svg+='<text x="'+(43+i*88)+'" y="163" text-anchor="middle" font-size="10" fill="currentColor">'+t+'</text>'});
+series.forEach(function(a,idx){var pts=a.vals.map(function(v,i){return (43+i*88)+','+(145-v*.78)}).join(' ');svg+='<polyline points="'+pts+'" fill="none" stroke="'+colors[idx%3]+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';a.vals.forEach(function(v,i){svg+='<circle cx="'+(43+i*88)+'" cy="'+(145-v*.78)+'" r="3.5" fill="'+colors[idx%3]+'"/>'})});svg+='</svg>';
+var legend=series.map(function(a,i){return '<span><i style="background:'+colors[i%3]+'"></i>'+SP[a.k][1]+'</span>'}).join('');
+shw('<h3>ถ้า '+SP[k][0]+nm(k)+' หายไป...</h3><p>'+(tx.length?tx.join('<br>'):'สิ่งมีชีวิตอื่นอาจได้รับผลกระทบทางอ้อม')+'</p><div class="chartbox"><b>📈 กราฟจำลองจำนวนประชากร</b><p style="font-size:13px;margin:4px 0">เปรียบเทียบการเปลี่ยนแปลงในช่วงเวลาต่อมา (เริ่มต้น = 100)</p>'+svg+'<div class="chartlegend">'+legend+'</div><small>หมายเหตุ: เป็นแบบจำลองเชิงแนวคิดเพื่อการเรียนรู้ ไม่ใช่ข้อมูลประชากรจริง</small></div><p>💡 เมื่อสิ่งมีชีวิตชนิดหนึ่งหายไป ความสัมพันธ์ในสายใยอาหารเปลี่ยนไป ทำให้ประชากรบางชนิดอาจเพิ่มขึ้นและบางชนิดอาจลดลง (ทดลองแล้ว '+Object.keys(seen).length+'/2 ชนิด)</p><button class="go" onclick="gone(\''+k+'\')">↩️ ให้ '+nm(k)+' กลับมา</button>');}
+function quests(){var Q=[['🔍','สำรวจให้ทั่ว','แตะสำรวจให้ครบทุกชนิดในฉาก ('+Object.keys(col).length+' ชนิดแล้ว)'],['🤝','นักจับคู่','จัดความสัมพันธ์ถูก 3 คู่'],['🔗','ช่างต่อโซ่','ต่อโซ่อาหารยาวสุดในแผนที่นี้ให้สำเร็จ'],['🌍','นักทดลอง','ลองให้สัตว์หรือพืชหายไป 2 ชนิด'],['🧠','ผู้เชี่ยวชาญการปรับตัว','ตอบเรื่องการปรับตัวถูก 2 ชนิด']];
+shw('<h3>📋 ภารกิจ'+M.n+'</h3>'+Q.map(function(q,i){var d=S['m'+M.i+'q'+(i+1)];return '<p class="'+(d?'ok':'')+'" style="border:2px solid var(--line);border-radius:14px;padding:6px 12px;margin:6px 0">'+q[0]+' <b>'+q[1]+'</b> '+(d?'⭐':'')+'<br><small>'+q[2]+'</small></p>'}).join('')+(stars(M.i)==5?'<p class="big">🏅 ได้เหรียญตรา “ผู้พิทักษ์'+M.n+'” แล้ว!</p>':''))}
+/* ===== ภาพประกอบฉาก ===== */
+function deco(i,p){var s='',x,h,c=['#3f8f45','#6a4e34','#cf9f4a','#2f9e6a','#cfe3f2','#2d7a3a'][i],o='<svg class="ov" width="1800" height="'+H+'">';
+if(!p){if(i<3)s+='<span class="cld" style="top:20px;animation-duration:100s">☁️</span><span class="cld" style="top:80px;animation-duration:140s;animation-delay:-60s;font-size:56px">☁️</span>';
+s+=o+'<circle cx="'+(M.ents[0][1]+M.ents[0][3]/2)+'" cy="'+(H-M.ents[0][2]-M.ents[0][3]/2)+'" r="100" fill="#fff" opacity=".25"/>';
+if(i==0)s+='<g fill="#2e7d3e"><rect x="1010" y="190" width="9" height="170"/><ellipse cx="1014" cy="190" rx="48" ry="14"/><rect x="1480" y="220" width="8" height="140"/><ellipse cx="1484" cy="220" rx="40" ry="12"/></g>';
+if(i==1)M.ents.forEach(function(e){if(e[0]=='tree'){var cx=e[1]+e[3]/2,b=H-e[2]+8;s+='<path d="M'+cx+' '+(b-40)+'q-35 5 -55 45M'+cx+' '+(b-40)+'q35 5 55 45M'+cx+' '+(b-40)+'q0 20 0 40" stroke="#5b4430" stroke-width="7" fill="none" stroke-linecap="round"/>'}});
+if(i==2)s+='<path d="M0 330Q300 230 650 320T1300 300T1800 330V460H0Z" fill="#efc977"/><path d="M0 380Q400 300 900 370T1800 360V460H0Z" fill="#e6b95c"/>';
+if(i==4)s+='<path d="M0 340Q300 260 700 330T1400 310T1800 340V460H0Z" fill="#e6f2fa"/><path d="M0 390Q500 330 1000 380T1800 370V460H0Z" fill="#f4fafe"/>';if(i==5)s+='<g stroke="#2a6a3a" stroke-width="5" fill="none"><path d="M200 0Q235 120 200 230M900 0Q865 140 910 260M1500 0Q1535 100 1500 210"/></g><path d="M0 400Q400 330 900 390T1800 380V460H0Z" fill="#3d7a34"/>';
+if(i==3){s+='<g fill="#fff" opacity=".13"><polygon points="180,0 260,0 400,380 100,380"/><polygon points="700,0 760,0 880,380 640,380"/><polygon points="1200,0 1280,0 1420,380 1120,380"/></g>';for(x=1;x<8;x++)s+='<circle cx="'+x*230+'" cy="440" r="'+(4+x%3*2)+'" fill="#fff" opacity=".5"><animate attributeName="cy" from="440" to="10" dur="'+(6+x)+'s" begin="-'+x+'s" repeatCount="indefinite"/></circle>'}
+return s+'</svg>'}
+s=o;for(x=10;x<1800;x+=(i==2||i==4?70:i==3?60:20)){h=12+x*7%20;s+=i==2||i==4?'<ellipse cx="'+x+'" cy="'+(445-x*3%25)+'" rx="'+(7+x%9)+'" ry="4" fill="'+c+'"/>':'<path d="M'+x+' '+H+'q'+(i==3?12:4)+' -'+h*(i==3?2.5:1)+' 0 -'+h*(i==3?4:1.7)+'" stroke="'+(i==3&&x%3==0?'#ff7aa8':c)+'" stroke-width="'+(i==3?7:3)+'" fill="none" stroke-linecap="round"/>'}
+return s+'</svg>'}
+/* ===== เสียง (สร้างด้วย Web Audio ไม่ต้องใช้ไฟล์) ===== */
+var AC,mute=!!S.mute,IN=0,amb_s,amb_t;
+function au(){if(mute)return 0;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state=='suspended')AC.resume();return AC}catch(e){return 0}}
+function nt(f,d,t,v,w){var c=au();if(!c)return;var o=c.createOscillator(),g=c.createGain(),s=c.currentTime+(w||0);o.type=t||'sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,s);g.gain.linearRampToValueAtTime(v||.12,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(g);g.connect(c.destination);o.start(s);o.stop(s+d+.05)}
+function sfx(k){var F={tap:function(){nt(660,.1,'triangle',.1)},ok:function(){[523,659,784].forEach(function(f,i){nt(f,.25,'triangle',.15,i*.1)})},no:function(){nt(220,.25,'sawtooth',.06);nt(165,.3,'sawtooth',.06,.12)},star:function(){[784,988,1175,1568].forEach(function(f,i){nt(f,.35,'sine',.15,i*.09)})}};F[k]()}
+function amb(on,i){clearInterval(amb_t);try{if(amb_s){amb_s.stop();amb_s.l.stop()}}catch(e){}amb_s=0;if(!on)return;var c=au();if(!c)return;var b=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=b.getChannelData(0),k;for(k=0;k<d.length;k++)d[k]=Math.random()*2-1;var s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain(),l=c.createOscillator(),lg=c.createGain();s.buffer=b;s.loop=true;f.type='lowpass';f.frequency.value=[700,450,1300,300,1000,600][i];g.gain.value=.035;l.frequency.value=.12+i*.03;lg.gain.value=.02;l.connect(lg);lg.connect(g.gain);l.start();s.connect(f);f.connect(g);g.connect(c.destination);s.start();s.l=l;amb_s=s;var P=[[262,294,330,392,440],[220,262,294,330,392],[196,233,262,311,349],[294,349,392,440,523],[330,392,440,494,587],[196,262,294,330,392]][i];amb_t=setInterval(function(){nt(P[Math.random()*5|0]*2,1.4,'sine',.05)},2200)}
+function tgl(){mute=!mute;S.mute=mute;sv();document.getElementById('sn').textContent=mute?'🔇':'🔊';if(mute)amb(0);else{sfx('tap');if(IN)amb(1,M.i)}}
+document.getElementById('sn').textContent=mute?'🔇':'🔊';
+title();
+</script>
+</body>
+</html>
